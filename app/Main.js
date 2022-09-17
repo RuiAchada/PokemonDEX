@@ -21,14 +21,14 @@ import Home from "./components/Home"
 
 function Main() {
   const initialState = {
-    loggedIn: Boolean(localStorage.getItem("complexappToken")),
+    myTeam: [],
+    rivalTeam: [],
     flashMessages: [],
-    user: {
-      token: localStorage.getItem("complexappToken"),
-      username: localStorage.getItem("complexappUsername"),
-      avatar: "./res/pokeball64.png" //localStorage.getItem("complexappAvatar")
+    pokeballsImg: {
+      myBalls: ["./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png"],
+      rivalBalls: ["./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png"]
     },
-    isSearchOpen: false
+    searchedPokemon: null
   }
 
   // how the state data of the app should change for particular actions
@@ -36,17 +36,9 @@ function Main() {
   function ourReducer(draft, action) {
     // draft gives a copy of state (using immer)
     // state - current / previous state value
-    switch (action.type) {
-      case "login":
-        //return { loggedIn: true, flashMessages: state.flashMessages } // in React we need to return a new object, that's why we need state.flashMessages
-        // immer gives us a carbon copy of state and we can mutate it
-        draft.loggedIn = true
-        draft.user = action.data
-        return // or break
-      case "logout":
-        //return { loggedIn: false, flashMessages: state.flashMessages }
-        draft.loggedIn = false
-        return
+    switch (
+      action.type // immer gives us a carbon copy of state and we can mutate it
+    ) {
       case "flashMessage":
         //return { loggedIn: state.loggedIn, flashMessages: state.flashMessages.concat(action.value) }
         draft.flashMessages.push(action.value)
@@ -57,22 +49,29 @@ function Main() {
       case "closeSearch":
         draft.isSearchOpen = false
         return
+      case "loadedPokemon":
+        draft.searchedPokemon = action.value
+        return
     }
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState) // dispatch - used to call an update state. (function, initial value for state)
 
   useEffect(() => {
-    if (state.loggedIn) {
-      localStorage.setItem("complexappToken", state.user.token) // name, value
-      localStorage.setItem("complexappUsername", state.user.username)
-      localStorage.setItem("complexappAvatar", state.user.avatar)
+    if (state.myTeam) {
+      localStorage.setItem("PokedexMyTeam", state.myTeam)
     } else {
-      localStorage.removeItem("complexappToken") // name, value
-      localStorage.removeItem("complexappUsername")
-      localStorage.removeItem("complexappAvatar")
+      localStorage.removeItem("PokedexMyTeam")
     }
-  }, [state.loggedIn])
+  }, [state.myTeam])
+
+  useEffect(() => {
+    if (state.rivalTeam) {
+      localStorage.setItem("PokedexRivalTeam", state.rivalTeam)
+    } else {
+      localStorage.removeItem("PokedexRivalTeam")
+    }
+  }, [state.rivalTeam])
 
   // <ExampleContext.Provider value={{ state, dispatch }}>  is not optimal for performance
   // because anytime these objects change, the components will re-render to have the latest value of state and dispatch
