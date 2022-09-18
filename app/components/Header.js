@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react"
 import { Link } from "react-router-dom"
-import StateContext from "../StateContext"
+import StateContext from "../Home/StateContext"
 
 function Header(props) {
   const appState = useContext(StateContext)

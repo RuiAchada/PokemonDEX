@@ -11,8 +11,8 @@ export const GET_POKEMONS = gql`
     }
   }
 `
-
-export const SEARCH_POKEMONS = gql`
+// we don't need all these fields but I will keep them for further development.
+export const SEARCH_POKEMON = gql`
   query pokemon($name: String) {
     pokemon(name: $name) {
       id
@@ -25,6 +25,17 @@ export const SEARCH_POKEMONS = gql`
       height {
         minimum
         maximum
+      }
+      evolutions {
+        id
+        number
+        name
+        classification
+        types
+        resistant
+        weaknesses
+        fleeRate
+        maxCP
       }
       classification
       types

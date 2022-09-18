@@ -4,10 +4,11 @@ import { useImmerReducer } from "use-immer" // to replace React useReducer
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client"
-import { useQuery, gql } from "@apollo/client"
+import { useQuery, useLazyQuery, gql } from "@apollo/client"
+import { SEARCH_POKEMON } from "./backend/queries"
 
-import StateContext from "./StateContext"
-import DispatchContext from "./DispatchContext"
+import StateContext from "./Home/StateContext"
+import DispatchContext from "./Home/DispatchContext"
 
 // Var
 import { client } from "./backend/apollo-connection"
@@ -18,6 +19,7 @@ import Footer from "./components/Footer"
 import FlashMessages from "./components/FlashMessages"
 import NotFound from "./components/NotFound"
 import Home from "./components/Home"
+import PokemonDetails from "./components/PokemonDetails"
 
 function Main() {
   const initialState = {
@@ -25,10 +27,12 @@ function Main() {
     rivalTeam: [],
     flashMessages: [],
     pokeballsImg: {
-      myBalls: ["./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png"],
-      rivalBalls: ["./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png", "./res/pokeball64.png"]
+      myBalls: ["../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png"],
+      rivalBalls: ["../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png"]
     },
-    searchedPokemon: null
+    pokemonList: [],
+    pokemonFiltered: [],
+    isDetailOpen: true
   }
 
   // how the state data of the app should change for particular actions
@@ -49,8 +53,20 @@ function Main() {
       case "closeSearch":
         draft.isSearchOpen = false
         return
-      case "loadedPokemon":
-        draft.searchedPokemon = action.value
+      case "pokemonList":
+        draft.pokemonList = action.value
+        draft.pokemonFiltered = action.value // update also filtered pokemon on first load
+        console.log("first load")
+        return
+      case "pokemonFiltered":
+        draft.pokemonFiltered = action.value
+        console.log("filtered")
+        return
+      case "openDetails":
+        draft.isDetailOpen = true
+        return
+      case "closeDetails":
+        draft.isDetailOpen = false
         return
     }
   }
@@ -88,6 +104,7 @@ function Main() {
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/Details/:name" element={<Home />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />

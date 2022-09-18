@@ -1,12 +1,14 @@
 import React, { useEffect, useContext } from "react"
-import DispatchContext from "../DispatchContext"
+import DispatchContext from "../Home/DispatchContext"
 import { useImmer } from "use-immer"
+import StateContext from "../Home/StateContext"
 import { useQuery, useLazyQuery, gql } from "@apollo/client"
 
 import { SEARCH_POKEMONS } from "../backend/queries"
 
 function SearchBar() {
   const appDispatch = useContext(DispatchContext)
+  const appState = useContext(StateContext)
 
   const [state, setState] = useImmer({
     searchTerm: "",
@@ -21,7 +23,8 @@ function SearchBar() {
     return () => document.removeEventListener("keyup", searchKeyPressHandler)
   }, [])
 
-  const [search, { loading, error, data }] = useLazyQuery(SEARCH_POKEMONS, {
+  // search (not fuzzy)
+  /*const [search, { loading, error, data }] = useLazyQuery(SEARCH_POKEMONS, {
     notifyOnNetworkStatusChange: true,
     variables: { name: state.searchTerm },
     fetchPolicy: "network-only", // Doesn't check cache before making a network request
@@ -29,7 +32,7 @@ function SearchBar() {
       console.log(data)
       appDispatch({ type: "loadedPokemon", value: data.pokemon })
     }
-  })
+  })*/
 
   useEffect(() => {
     if (state.searchTerm.trim()) {
@@ -38,35 +41,42 @@ function SearchBar() {
         draft.show = "loading"
       })
       const delay = setTimeout(() => {
-        search()
+        appDispatch({
+          type: "pokemonFiltered",
+          value: appState.pokemonList.filter(pok => {
+            return pok.name.trim().toLowerCase().includes(state.searchTerm)
+          })
+        })
         setState(draft => {
           draft.requestCount++ // increment request to have query in a different useEffect
         })
-      }, 700)
+      }, 200)
       //clean up function to cancel time out (DEBOUNCE)
       return () => clearTimeout(delay)
     } else {
-      // if string is empty
-      setState(draft => {
-        draft.show = "neither"
+      // if string is empty load all pokemon from the cached list
+      appDispatch({
+        type: "pokemonFiltered",
+        value: appState.pokemonList
       })
     }
   }, [state.searchTerm])
 
   function searchKeyPressHandler(e) {
     if (e.keyCode == 27) {
-      // 27 ESC key
-      //appDispatch({ type: "closeSearch" })
+      // 27 ESC key - clear text
+      const tbxSearch = document.getElementById("live-search-field")
+      tbxSearch.value = ""
+      setState(draft => {
+        draft.searchTerm = ""
+      })
     }
   }
 
   function handleInput(e) {
     const value = e.target.value
     setState(draft => {
-      // usually we dont mutate state but with immer we can, using this draft
-      const trim = value.trim()
-      const modifiedString = trim.charAt(0).toUpperCase() + trim.slice(1).toLowerCase() // we have to capitalize the first letter because that's how the API has the pokemon names
-      draft.searchTerm = modifiedString
+      draft.searchTerm = value.trim()
     })
   }
 
@@ -76,7 +86,7 @@ function SearchBar() {
         <label htmlFor="live-search-field" className="search-overlay-icon">
           <i className="fas fa-search"></i>
         </label>
-        <input onChange={handleInput} autoFocus type="text" autoComplete="off" id="live-search-field" className="live-search-field" placeholder="Search Pokemon..." />
+        <input id="live-search-field" onChange={handleInput} autoFocus type="text" autoComplete="off" className="live-search-field" placeholder="Search Pokemon..." />
         {/*<span className="close-live-search">
           <i className="fas fa-times-circle"></i>
   </span>*/}

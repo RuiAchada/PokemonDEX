@@ -1,28 +1,57 @@
 import React, { useContext, useEffect } from "react"
-import StateContext from "../StateContext"
-import { useQuery, gql } from "@apollo/client"
+import StateContext from "../Home/StateContext"
+import DispatchContext from "../Home/DispatchContext"
+import { useQuery, useLazyQuery, gql } from "@apollo/client"
+import { useImmer } from "use-immer"
 import Pokemon from "./Pokemon"
 import { GET_POKEMONS } from "../backend/queries"
 
-const first = 20
+const first = 900
 
 function PokemonGrid() {
   const appState = useContext(StateContext)
-  console.log(appState)
+  const appDispatch = useContext(DispatchContext)
 
-  if (appState.searchedPokemon) {
-    return <Pokemon key={appState.searchedPokemon.id} name={appState.searchedPokemon.name} image={appState.searchedPokemon.image} types={appState.searchedPokemon.types} />
-  } else {
-    console.log(false)
-    const { loading, error, data } = useQuery(GET_POKEMONS, {
-      variables: { first: first || first !== null }
-    })
+  const [state, setState] = useImmer({
+    isLoading: true,
+    isError: false
+  })
 
-    if (loading) return <p>Loading...</p>
-    if (error) return <p>Error :(</p>
-    console.log(data)
-    return data.pokemons.map(({ id, name, image, types }) => <Pokemon key={id} name={name} image={image} types={types} />)
-  }
+  /*const { loading, error, data } = useQuery(GET_POKEMONS, {
+    variables: { first: first || first !== null }
+  })*/
+  const [loadPokemon, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
+    variables: { first: first || first !== null }
+  })
+
+  useEffect(() => {
+    loadPokemon()
+  }, [])
+
+  useEffect(() => {
+    if (data && loading) {
+      // loading
+    }
+    if (data && error) {
+      // error
+      setState(draft => {
+        draft.isError = true
+      })
+    }
+
+    if (data && !loading) {
+      console.log(data.pokemons)
+      appDispatch({ type: "pokemonList", value: data.pokemons })
+      setState(draft => {
+        draft.isLoading = loading
+      })
+    }
+  }, [data])
+
+  if (state.isError) return <p>Error...</p>
+  if (state.isLoading || !appState.pokemonList) return <p>Loading...</p>
+
+  return appState.pokemonFiltered.map(({ id, number, name, image, types }) => <Pokemon key={id} id={id} number={number} name={name} image={image} types={types} />)
 }
 
 export default PokemonGrid
