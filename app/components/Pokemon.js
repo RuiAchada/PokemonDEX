@@ -3,7 +3,7 @@ import DispatchContext from "../Home/DispatchContext"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { useImmer } from "use-immer"
 
-const colorTypes = {
+export const colorTypes = {
   normal: "#A8A878",
   fighting: "#C03028",
   flying: "#A890F0",

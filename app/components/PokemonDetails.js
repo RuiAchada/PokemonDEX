@@ -5,6 +5,7 @@ import StateContext from "../Home/StateContext"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { useQuery, useLazyQuery, gql } from "@apollo/client"
 import { SEARCH_POKEMON } from "../backend/queries"
+import { colorTypes } from "./Pokemon"
 
 function PokemonDetails() {
   const appDispatch = useContext(DispatchContext)
@@ -74,13 +75,52 @@ function PokemonDetails() {
                 <img className="shadow" src={`${data.pokemon.image}`} />
               </figure>
 
-              <div>Characteristics</div>
+              <div>
+                <b>Characteristics:</b>
+                <p>{data.pokemon.classification}</p>
+              </div>
 
-              <div>Weaknesses</div>
+              <div>
+                <b>Weaknesses:</b>
+                {data.pokemon.weaknesses.map(it => {
+                  const color = colorTypes[`${it.toLowerCase()}`]
+                  return (
+                    <p className="rounded p-1" style={{ backgroundColor: `${color}` }} key={"w" + it}>
+                      {it}
+                    </p>
+                  )
+                })}
+              </div>
 
-              <div>Resistant</div>
+              <div>
+                <b>Resistant:</b>
+                {data.pokemon.resistant.map(it => {
+                  const color = colorTypes[`${it.toLowerCase()}`]
+                  return (
+                    <p className="rounded p-1" style={{ backgroundColor: `${color}` }} key={"r" + it}>
+                      {it}
+                    </p>
+                  )
+                })}
+              </div>
 
-              <div>Evolutions</div>
+              <div>
+                <b>Evolutions:</b>
+                <div className="d-flex flex-wrap evolutions">
+                  {Boolean(data.pokemon.evolutions) &&
+                    data.pokemon.evolutions.map(it => {
+                      return (
+                        <Link style={{ textDecoration: "none", color: "#212529" }} onClick={() => appDispatch({ type: "openDetails" })} key={"evoLink" + it.number} to={`/Details/${it.name}`}>
+                          <div className="p-2">
+                            <figure className="shadow align-bottom rounded-circle overflow-hidden">
+                              <img src={`${it.image}`} />
+                            </figure>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                </div>
+              </div>
             </div>
           )}
         </div>

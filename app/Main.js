@@ -32,7 +32,7 @@ function Main() {
     },
     pokemonList: [],
     pokemonFiltered: [],
-    isDetailOpen: true
+    isDetailOpen: false
   }
 
   // how the state data of the app should change for particular actions

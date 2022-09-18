@@ -3,7 +3,13 @@
 }
 
 .myHeader {
-  background-color: #1abc9c;
+  /*background-color: #1abc9c;*/
+  background: rgb(33, 187, 157);
+  background: -moz-linear-gradient(0deg, rgba(33, 187, 157, 1) 0%, rgba(28, 218, 181, 1) 100%);
+  background: -webkit-linear-gradient(0deg, rgba(33, 187, 157, 1) 0%, rgba(28, 218, 181, 1) 100%);
+  background: linear-gradient(0deg, rgba(33, 187, 157, 1) 0%, rgba(28, 218, 181, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#21bb9d",endColorstr="#1cdab5",GradientType=1);
+  border-bottom: 1px solid #107763;
 }
 
 .header-chat-icon {
@@ -12,8 +18,33 @@
   top: 3px;
 }
 
+.evolutions figure {
+  background-color: white;
+  width: 90px;
+  height: 90px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.evolutions img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.evolutions figure:hover {
+  opacity: 0.9;
+  width: 100px;
+  height: 100px;
+}
+
 .pokemonCard {
   cursor: pointer;
+}
+
+.pokemonCard:hover figure {
+  opacity: 0.9;
 }
 
 .pokemonCard figure {
@@ -40,7 +71,7 @@
 }
 
 .pokeball {
-  opacity: 0.65;
+  opacity: 0.7;
   cursor: pointer;
 }
 
@@ -158,6 +189,7 @@
 
 .pokemonDetails-bottom {
   overflow: auto;
+  height: 95%;
 }
 
 @media (min-width: 700px) {

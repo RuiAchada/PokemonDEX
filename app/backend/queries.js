@@ -36,6 +36,7 @@ export const SEARCH_POKEMON = gql`
         weaknesses
         fleeRate
         maxCP
+        image
       }
       classification
       types

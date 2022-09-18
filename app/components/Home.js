@@ -20,7 +20,7 @@ function Home() {
       <div className="d-flex flex-wrap">
         <PokemonGrid />
       </div>
-      <CSSTransition timeout={330} in={appState.isDetailOpen} classNames="search-overlay" unmountOnExit>
+      <CSSTransition timeout={330} in={appState.isDetailOpen} classNames="pokemonDetails" unmountOnExit>
         <PokemonDetails />
       </CSSTransition>
     </Page>
