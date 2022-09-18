@@ -22,6 +22,10 @@ function PokemonDetails() {
   })
 
   useEffect(() => {
+    console.log("DETAILS LOAD")
+  }, [])
+
+  useEffect(() => {
     setState(draft => {
       draft.show = "loading"
     })

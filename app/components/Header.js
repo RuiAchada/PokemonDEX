@@ -14,6 +14,12 @@ function Header(props) {
             PokeDex{" "}
           </Link>
         </h4>
+        <h4 className="my-0 mr-md-auto font-weight-normal">
+          <Link to="/Battle" className="text-white">
+            {" "}
+            Battle{" "}
+          </Link>
+        </h4>
       </div>
       <div className="container d-flex justify-content-center">
         <div className="d-flex flex-row">

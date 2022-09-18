@@ -20,6 +20,7 @@ import FlashMessages from "./components/FlashMessages"
 import NotFound from "./components/NotFound"
 import Home from "./components/Home"
 import PokemonDetails from "./components/PokemonDetails"
+import BattleHome from "./Battle/BattleHome"
 
 function Main() {
   const initialState = {
@@ -105,6 +106,7 @@ function Main() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/Details/:name" element={<Home />} />
+              <Route path="/Battle" element={<BattleHome />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />
