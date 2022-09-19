@@ -29,7 +29,14 @@ module.exports = {
             presets: ["@babel/preset-react", ["@babel/preset-env", { targets: { node: "12" } }]]
           }
         }
-      }
+      },
+         // Relevant bit of config for style loader and css loader (this was necessary to import .css files, for example Skeleton)
+         {
+          test: /\.css$/,
+          // the order of `use` is important!
+          use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+        },
+
     ]
   }
 }
