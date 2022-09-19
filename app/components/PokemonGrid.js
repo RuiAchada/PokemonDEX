@@ -6,7 +6,7 @@ import { useImmer } from "use-immer"
 import Pokemon from "./Pokemon"
 import { GET_POKEMONS } from "../backend/queries"
 
-const first = 900
+const first = 151
 
 function PokemonGrid() {
   const appState = useContext(StateContext)
@@ -43,15 +43,17 @@ function PokemonGrid() {
       console.log(data.pokemons)
       appDispatch({ type: "pokemonList", value: data.pokemons })
       setState(draft => {
-        draft.isLoading = loading
+        draft.isLoading = false
       })
     }
   }, [data])
 
   if (state.isError) return <p>Error...</p>
-  if (state.isLoading || !appState.pokemonList) return <p>Loading...</p>
-
-  return appState.pokemonFiltered.map(({ id, number, name, image, types }) => <Pokemon key={id} id={id} number={number} name={name} image={image} types={types} />)
+  if (state.isLoading || !appState.pokemonList) {
+    return [...Array(12)].map((x, i) => <Pokemon key={i} isLoading={state.isLoading} types={[]} />)
+    //return <p>Loading...</p>
+  }
+  return appState.pokemonFiltered.map(({ id, number, name, image, types }) => <Pokemon key={id} id={id} isLoading={state.isLoading} number={number} name={name} image={image} types={types} />)
 }
 
 export default PokemonGrid

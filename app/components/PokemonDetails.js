@@ -26,11 +26,13 @@ function PokemonDetails() {
   }, [])
 
   useEffect(() => {
-    setState(draft => {
-      draft.show = "loading"
-    })
-    console.log("loaded pokemon details")
-    lazyLoadPokemon()
+    if (name) {
+      setState(draft => {
+        draft.show = "loading"
+      })
+      console.log("loaded pokemon details")
+      lazyLoadPokemon()
+    }
   }, [name])
 
   const [lazyLoadPokemon, { loading, error, data }] = useLazyQuery(SEARCH_POKEMON, {
@@ -64,9 +66,12 @@ function PokemonDetails() {
       <div className="pokemonDetails-top shadow-sm">
         <div className="container container--narrow">
           <b>{Boolean(!data) ? "Loading..." : data.pokemon.name + " #" + data.pokemon.number}</b>
-          <span onClick={() => appDispatch({ type: "closeDetails" })} className="close-live-search">
+          <Link className="close-live-search" style={{ textDecoration: "none", color: "#212529" }} onClick={() => appDispatch({ type: "closeDetails" })} to={`/`}>
             <i className="fas fa-times-circle"></i>
-          </span>
+          </Link>
+          {/*<span onClick={() => appDispatch({ type: "closeDetails" })} className="close-live-search">
+            <i className="fas fa-times-circle"></i>
+  </span>*/}
         </div>
       </div>
 
@@ -78,6 +83,9 @@ function PokemonDetails() {
               <figure className="align-bottom">
                 <img className="shadow" src={`${data.pokemon.image}`} />
               </figure>
+
+              <div onClick={() => appDispatch({ type: "choosePokemon", value: data.pokemon })}>Choose</div>
+              <br />
 
               <div>
                 <b>Characteristics:</b>

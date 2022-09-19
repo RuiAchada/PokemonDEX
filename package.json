@@ -25,6 +25,7 @@
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
+    "apollo3-cache-persist": "^0.14.1",
     "babel-loader": "^8.2.5",
     "graphql": "^16.6.0",
     "immer": "^9.0.15",

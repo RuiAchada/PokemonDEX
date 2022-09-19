@@ -1,1 +1,6 @@
---
+todo:
+-Improve performance by loading only 20 pokemon first and the rest only when scrolling? (this will affect the fuzzy search)
+
+
+
+

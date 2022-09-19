@@ -11,41 +11,59 @@ export const GET_POKEMONS = gql`
     }
   }
 `
-// we don't need all these fields but I will keep them for further development.
+
 export const SEARCH_POKEMON = gql`
-  query pokemon($name: String) {
-    pokemon(name: $name) {
+  query pokemon($id: String, $name: String) {
+    pokemon(id: $id, name: $name) {
       id
       number
       name
-      weight {
-        minimum
-        maximum
-      }
-      height {
-        minimum
-        maximum
-      }
       evolutions {
         id
         number
         name
-        classification
-        types
-        resistant
-        weaknesses
-        fleeRate
-        maxCP
         image
       }
       classification
       types
       resistant
       weaknesses
-      fleeRate
-      maxCP
+      image
+    }
+  }
+`
+
+// we don't need all these fields but I will keep them for further development.
+export const GET_POKEMON_DETAILS = gql`
+  query pokemon($id: String, $name: String) {
+    pokemon(id: $id, name: $name) {
+      id
+      number
+      name
+      evolutions {
+        id
+        number
+        name
+        image
+      }
+      classification
+      types
+      resistant
+      weaknesses
       maxHP
       image
+      attacks {
+        fast {
+          name
+          type
+          damage
+        }
+        special {
+          name
+          type
+          damage
+        }
+      }
     }
   }
 `

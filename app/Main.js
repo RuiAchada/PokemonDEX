@@ -23,17 +23,15 @@ import PokemonDetails from "./components/PokemonDetails"
 import BattleHome from "./Battle/BattleHome"
 
 function Main() {
+  const maxChosenPokemon = 9 // counting from 0
   const initialState = {
-    myTeam: [],
-    rivalTeam: [],
+    chosenPokemon: [],
     flashMessages: [],
-    pokeballsImg: {
-      myBalls: ["../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png"],
-      rivalBalls: ["../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png"]
-    },
+    pokeballsImg: ["../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png"],
     pokemonList: [],
     pokemonFiltered: [],
-    isDetailOpen: false
+    isDetailOpen: false,
+    selectedBall: 0
   }
 
   // how the state data of the app should change for particular actions
@@ -69,18 +67,36 @@ function Main() {
       case "closeDetails":
         draft.isDetailOpen = false
         return
+      case "choosePokemon":
+        draft.chosenPokemon[draft.selectedBall] = action.value
+        draft.pokeballsImg[draft.selectedBall] = action.value.image
+        if (draft.selectedBall < maxChosenPokemon) draft.selectedBall++
+        else draft.selectedBall = 0
+
+        /*if (draft.myTeam.length < maxPokemon) draft.myTeam.push(action.value)
+        else if (draft.rivalTeam.length < maxPokemon) draft.rivalTeam.push(action.value)
+        else {
+          draft.myTeam.shift()
+          draft.myTeam.unshift(action.value)
+        }*/
+
+        return
+      case "selectBall":
+        draft.selectedBall = action.value
+        return
     }
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState) // dispatch - used to call an update state. (function, initial value for state)
 
   useEffect(() => {
-    if (state.myTeam) {
-      localStorage.setItem("PokedexMyTeam", state.myTeam)
+    console.log(state.chosenPokemon)
+    if (state.chosenPokemon) {
+      localStorage.setItem("PokedexMyTeam", state.chosenPokemon)
     } else {
       localStorage.removeItem("PokedexMyTeam")
     }
-  }, [state.myTeam])
+  }, [state.chosenPokemon])
 
   useEffect(() => {
     if (state.rivalTeam) {
