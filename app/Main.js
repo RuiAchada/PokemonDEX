@@ -25,9 +25,9 @@ import BattleHome from "./Battle/BattleHome"
 function Main() {
   const maxChosenPokemon = 9 // counting from 0
   const initialState = {
-    chosenPokemon: [],
+    chosenPokemon: localStorage.getItem("chosenPokemon") ? JSON.parse(localStorage.getItem("chosenPokemon")) : [],
     flashMessages: [],
-    pokeballsImg: ["../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png", "../res/pokeball64.png"],
+    pokeballsImg: "../res/pokeball64.png",
     pokemonList: [],
     pokemonFiltered: [],
     isDetailOpen: false,
@@ -68,18 +68,10 @@ function Main() {
         draft.isDetailOpen = false
         return
       case "choosePokemon":
-        draft.chosenPokemon[draft.selectedBall] = action.value
-        draft.pokeballsImg[draft.selectedBall] = action.value.image
+        draft.chosenPokemon[draft.selectedBall] = action.value[0]
+        //draft.pokeballsImg[draft.selectedBall] = action.value[0].image
         if (draft.selectedBall < maxChosenPokemon) draft.selectedBall++
         else draft.selectedBall = 0
-
-        /*if (draft.myTeam.length < maxPokemon) draft.myTeam.push(action.value)
-        else if (draft.rivalTeam.length < maxPokemon) draft.rivalTeam.push(action.value)
-        else {
-          draft.myTeam.shift()
-          draft.myTeam.unshift(action.value)
-        }*/
-
         return
       case "selectBall":
         draft.selectedBall = action.value
@@ -92,9 +84,9 @@ function Main() {
   useEffect(() => {
     console.log(state.chosenPokemon)
     if (state.chosenPokemon) {
-      localStorage.setItem("PokedexMyTeam", state.chosenPokemon)
+      localStorage.setItem("chosenPokemon", JSON.stringify(state.chosenPokemon))
     } else {
-      localStorage.removeItem("PokedexMyTeam")
+      localStorage.removeItem("chosenPokemon")
     }
   }, [state.chosenPokemon])
 

@@ -11,7 +11,7 @@ import HealthBar from "../components/HealthBar"
 
 // query
 import { useQuery, useLazyQuery, gql } from "@apollo/client"
-import { GET_POKEMONS } from "../backend/queries"
+import { GET_POKEMON_DETAILS } from "../backend/queries"
 import Pokemon from "../components/Pokemon"
 
 function BattleHome(props) {
@@ -37,19 +37,27 @@ function BattleHome(props) {
 
   console.log(state)
 
-  // remove this and change to caching
-  const [loadPokemon, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
+  /*  const { loading, error, data } = useQuery(GET_POKEMONS, {
     variables: { first: first || first !== null }
-  })
+  })*/
+
+  /* const [loadPokemon, { loading, error, data }] = useLazyQuery(GET_POKEMON_DETAILS, {
+    notifyOnNetworkStatusChange: true,
+    variables: { id },
+    onCompleted: data => {
+      console.log(data)
+      if (data.pokemon) selectedMyPokemon.push(data.pokemon)
+    }
+  })*/
 
   useEffect(() => {
-    loadPokemon()
+    const half = Math.ceil(appState.chosenPokemon.length / 2)
     setState(draft => {
-      for (let i = 0; i < numberOfPoke; i++) {
-        const randomMyPoke = getRandomPokemon()
-        draft.myPokemon.push(randomMyPoke)
-        const randomRivalPoke = getRandomPokemon()
-        draft.rivalPokemon.push(randomRivalPoke)
+      if (!state.myPokemon.length) {
+        draft.myPokemon = appState.chosenPokemon.slice(0, half)
+      }
+      if (!state.rivalPokemon.length) {
+        draft.rivalPokemon = appState.chosenPokemon.slice(half)
       }
       draft.selectedMyPokemon = draft.myPokemon[0]
       draft.selectedRivalPokemon = draft.rivalPokemon[0]
@@ -62,33 +70,40 @@ function BattleHome(props) {
       <SkeletonTheme baseColor="#dddddd" highlightColor="#e7e7e7">
         <div className="pb-4">
           <div className="d-flex flex-column">
-            <div className="d-flex flex-row">
-              <Pokemon key={state.selectedMyPokemon.id} id={state.selectedMyPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedMyPokemon.name} image={state.selectedMyPokemon.image} types={state.selectedMyPokemon.types} />
-              <HealthBar />
-            </div>
-            <div className="d-flex flex-row">
-              <BattlePokeballs />
-            </div>
+            {Boolean(!state.selectedRivalPokemon) && <h2>No pokemon selected</h2>}
+            {Boolean(state.selectedRivalPokemon) && (
+              <div>
+                <div className="d-flex flex-row">
+                  <Pokemon key={state.selectedRivalPokemon.id} id={state.selectedRivalPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedRivalPokemon.name} image={state.selectedRivalPokemon.image} types={state.selectedRivalPokemon.types} />
+                  <HealthBar hp={state.selectedRivalPokemon.maxHP} maxHP={state.selectedRivalPokemon.maxHP} />
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="d-flex flex-column">
-            <div className="d-flex flex-row-reverse">
-              <BattlePokeballs />
-              <h4>Name</h4>
-            </div>
-            <div className="d-flex flex-row-reverse">
-              <Pokemon key={state.selectedRivalPokemon.id} id={state.selectedRivalPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedRivalPokemon.name} image={state.selectedRivalPokemon.image} types={state.selectedRivalPokemon.types} />
-              <HealthBar />
-            </div>
+            {Boolean(!state.selectedMyPokemon) && (
+              <div className="d-flex flex-row-reverse">
+                <h2>No pokemon selected</h2>
+              </div>
+            )}
+            {Boolean(state.selectedMyPokemon) && (
+              <div>
+                <div className="d-flex flex-row-reverse">
+                  <Pokemon key={state.selectedMyPokemon.id} id={state.selectedMyPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedMyPokemon.name} image={state.selectedMyPokemon.image} types={state.selectedMyPokemon.types} />
+                  <HealthBar hp={state.selectedMyPokemon.maxHP} maxHP={state.selectedMyPokemon.maxHP} />
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="container">
             <div className="row">
-              <div className="col border">{state.isLoading || !state.selectedRivalPokemon ? "-" : ""}</div>
-              <div className="col border">Column</div>
+              <div className="col border">{state.isLoading || !state.selectedMyPokemon ? "Attack A" : state.selectedMyPokemon.attacks.fast[0].name}</div>
+              <div className="col border">{state.isLoading || !state.selectedMyPokemon ? "Attack B" : state.selectedMyPokemon.attacks.fast[1].name}</div>
               <div className="w-100"></div>
-              <div className="col border">Column</div>
-              <div className="col border">Column</div>
+              <div className="col border">{state.isLoading || !state.selectedMyPokemon ? "Attack C" : state.selectedMyPokemon.attacks.special[0].name}</div>
+              <div className="col border">{state.isLoading || !state.selectedMyPokemon ? "Attack D" : state.selectedMyPokemon.attacks.special[1].name}</div>
             </div>
           </div>
         </div>

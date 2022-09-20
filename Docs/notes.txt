@@ -1,5 +1,8 @@
 todo:
 -Improve performance by loading only 20 pokemon first and the rest only when scrolling? (this will affect the fuzzy search)
+-When opening the Pokemon Details, i'm making running a new query for that specific pokemon. This is because I had a different approach when first started developing. This should be replaced by a .filter of all pokemon already loaded on the grid by the selected pokemon name.
+-Change API. Images would look better in .png format.
+
 
 
 

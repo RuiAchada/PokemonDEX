@@ -8,7 +8,7 @@ function BattlePokeballs(props) {
   return (
     <div className="d-flex flex-row">
       {pokeballsNumber.map(x => {
-        return <img key={x} className="p-2 pokeballBattle" src={appState.pokeballsImg.myBalls[0]} />
+        return <img key={x} className="p-2 pokeballBattle" src={"appState.pokeballsImg.myBalls[0]"} />
       })}
     </div>
   )

@@ -12,6 +12,40 @@ export const GET_POKEMONS = gql`
   }
 `
 
+export const GET_POKEMONS_WITH_DETAILS = gql`
+  query ($first: Int!) {
+    pokemons(first: $first) {
+      id
+      number
+      name
+      evolutions {
+        id
+        number
+        name
+        image
+      }
+      classification
+      types
+      resistant
+      weaknesses
+      maxHP
+      image
+      attacks {
+        fast {
+          name
+          type
+          damage
+        }
+        special {
+          name
+          type
+          damage
+        }
+      }
+    }
+  }
+`
+
 export const SEARCH_POKEMON = gql`
   query pokemon($id: String, $name: String) {
     pokemon(id: $id, name: $name) {

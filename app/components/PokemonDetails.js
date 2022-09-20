@@ -84,7 +84,21 @@ function PokemonDetails() {
                 <img className="shadow" src={`${data.pokemon.image}`} />
               </figure>
 
-              <div onClick={() => appDispatch({ type: "choosePokemon", value: data.pokemon })}>Choose</div>
+              <button
+                onClick={() =>
+                  appDispatch({
+                    type: "choosePokemon",
+                    value: appState.pokemonList.filter(it => {
+                      return it.name == data.pokemon.name
+                    })
+                  })
+                }
+                type="button"
+                className="mb-4 btn btn-secondary"
+              >
+                Choose
+              </button>
+
               <br />
 
               <div>

@@ -4,7 +4,7 @@ import DispatchContext from "../Home/DispatchContext"
 import { useQuery, useLazyQuery, gql } from "@apollo/client"
 import { useImmer } from "use-immer"
 import Pokemon from "./Pokemon"
-import { GET_POKEMONS } from "../backend/queries"
+import { GET_POKEMONS_WITH_DETAILS } from "../backend/queries"
 
 const first = 151
 
@@ -17,10 +17,10 @@ function PokemonGrid() {
     isError: false
   })
 
-  /*const { loading, error, data } = useQuery(GET_POKEMONS, {
+  /*const { loading, error, data } = useQuery(GET_POKEMONS_WITH_DETAILS, {
     variables: { first: first || first !== null }
   })*/
-  const [loadPokemon, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
+  const [loadPokemon, { loading, error, data }] = useLazyQuery(GET_POKEMONS_WITH_DETAILS, {
     variables: { first: first || first !== null }
   })
 
