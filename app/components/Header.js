@@ -35,9 +35,9 @@ function Header(props) {
           <PokeballFigure index={2} selectedBall={appState.selectedBall} pokemon={appState.chosenPokemon[2]} image={appState.pokeballsImg} />
           <PokeballFigure index={3} selectedBall={appState.selectedBall} pokemon={appState.chosenPokemon[3]} image={appState.pokeballsImg} />
           <PokeballFigure index={4} selectedBall={appState.selectedBall} pokemon={appState.chosenPokemon[4]} image={appState.pokeballsImg} />
-          <div className="mr-2">135</div>
+          <div className="mr-2">{appState.myTeamScore}</div>
           <div className="mr-2">VS</div>
-          <div className="mr-2">103</div>
+          <div className="mr-2">{appState.rivalTeamScore}</div>
           <PokeballFigure index={5} selectedBall={appState.selectedBall} pokemon={appState.chosenPokemon[5]} image={appState.pokeballsImg} />
           <PokeballFigure index={6} selectedBall={appState.selectedBall} pokemon={appState.chosenPokemon[6]} image={appState.pokeballsImg} />
           <PokeballFigure index={7} selectedBall={appState.selectedBall} pokemon={appState.chosenPokemon[7]} image={appState.pokeballsImg} />

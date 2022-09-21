@@ -298,4 +298,5 @@
 .healthBar {
   height: 20px;
   width: 100%;
+  transition: width 1s;
 }

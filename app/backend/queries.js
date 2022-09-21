@@ -63,6 +63,7 @@ export const SEARCH_POKEMON = gql`
       resistant
       weaknesses
       image
+      maxHP
     }
   }
 `

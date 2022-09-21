@@ -1,11 +1,13 @@
 import React from "react"
 
+//const hp = "20%"
+
 function HealthBar(props) {
   return (
     <div className="d-flex flex-column">
       <h6>HP</h6>
-      <div className="healthBarExt border">
-        <div className="healthBar bg-success"></div>
+      <div className=" rounded healthBarExt border">
+        <div style={{ width: props.hpPercentage }} className=" rounded healthBar bg-success"></div>
         <div>
           {props.hp}/{props.maxHP}
         </div>

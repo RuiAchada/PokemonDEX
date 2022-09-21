@@ -6,6 +6,7 @@ import { useParams, Link, useNavigate } from "react-router-dom"
 import { useQuery, useLazyQuery, gql } from "@apollo/client"
 import { SEARCH_POKEMON } from "../backend/queries"
 import { colorTypes } from "./Pokemon"
+import { proposalSyntaxPlugins } from "@babel/preset-env/lib/shipped-proposals"
 
 function PokemonDetails() {
   const appDispatch = useContext(DispatchContext)
@@ -18,7 +19,8 @@ function PokemonDetails() {
     show: "loading", // can be loading icon or show the results
     requestCount: 0,
     isLoading: true,
-    isError: false
+    isError: false,
+    isAlreadySelected: false
   })
 
   useEffect(() => {
@@ -58,8 +60,35 @@ function PokemonDetails() {
         draft.isLoading = loading
         draft.show = "results"
       })
+      checkIfSelected()
     }
   }, [data])
+
+  // Check if pokemon selected was already chosen for the same team. If true, disable the "Choose" button
+  function checkIfSelected() {
+    const i = appState.chosenPokemon.findIndex(e => e.name === data.pokemon.name)
+
+    if (i > -1) {
+      // pokemon already chosen. Now let's check on which team
+
+      // check if it was chosen for my team or rival's team, based on the current pokeball selected.
+      if ((i <= 4 && appState.selectedBall <= 4) || (i > 4 && appState.selectedBall > 4)) {
+        setState(draft => {
+          draft.isAlreadySelected = true
+        })
+      } else {
+        // Pokemon can be chosen for the selected pokeball / team
+        setState(draft => {
+          draft.isAlreadySelected = false
+        })
+      }
+    } else {
+      // NOT FOUND IN ANY TEAM
+      setState(draft => {
+        draft.isAlreadySelected = false
+      })
+    }
+  }
 
   return (
     <div className="pokemonDetails shadow">
@@ -85,16 +114,20 @@ function PokemonDetails() {
               </figure>
 
               <button
-                onClick={() =>
+                onClick={() => {
+                  setState(draft => {
+                    draft.isAlreadySelected = true
+                  })
                   appDispatch({
                     type: "choosePokemon",
                     value: appState.pokemonList.filter(it => {
                       return it.name == data.pokemon.name
                     })
                   })
-                }
+                }}
                 type="button"
-                className="mb-4 btn btn-secondary"
+                className="mb-4 btn btn-primary"
+                disabled={state.isAlreadySelected}
               >
                 Choose
               </button>

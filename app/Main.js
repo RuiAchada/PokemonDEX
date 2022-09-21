@@ -31,7 +31,9 @@ function Main() {
     pokemonList: [],
     pokemonFiltered: [],
     isDetailOpen: false,
-    selectedBall: 0
+    selectedBall: 0,
+    myTeamScore: 0,
+    rivalTeamScore: 0
   }
 
   // how the state data of the app should change for particular actions
@@ -76,6 +78,28 @@ function Main() {
       case "selectBall":
         draft.selectedBall = action.value
         return
+      case "updateTeamScore":
+        //if (draft.selectedBall <= 4) {
+        // is in my team
+        let sum = draft.chosenPokemon
+          .filter((obj, idx) => {
+            return idx <= 4
+          })
+          .reduce((previous, current) => {
+            return previous + current.maxHP
+          }, 0)
+        draft.myTeamScore = sum
+        //} else {
+        let sumRival = draft.chosenPokemon
+          .filter((obj, idx) => {
+            return idx > 4
+          })
+          .reduce((previous, current) => {
+            return previous + current.maxHP
+          }, 0)
+        draft.rivalTeamScore = sumRival
+        //}
+        return
     }
   }
 
@@ -83,20 +107,15 @@ function Main() {
 
   useEffect(() => {
     console.log(state.chosenPokemon)
+    dispatch({
+      type: "updateTeamScore"
+    })
     if (state.chosenPokemon) {
       localStorage.setItem("chosenPokemon", JSON.stringify(state.chosenPokemon))
     } else {
       localStorage.removeItem("chosenPokemon")
     }
   }, [state.chosenPokemon])
-
-  useEffect(() => {
-    if (state.rivalTeam) {
-      localStorage.setItem("PokedexRivalTeam", state.rivalTeam)
-    } else {
-      localStorage.removeItem("PokedexRivalTeam")
-    }
-  }, [state.rivalTeam])
 
   // <ExampleContext.Provider value={{ state, dispatch }}>  is not optimal for performance
   // because anytime these objects change, the components will re-render to have the latest value of state and dispatch
