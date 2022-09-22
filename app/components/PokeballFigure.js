@@ -7,6 +7,7 @@ function PokeballFigure(props) {
   return (
     <figure onClick={() => appDispatch({ type: "selectBall", value: props.index })} className={(props.selectedBall == props.index ? "pokeballSelectedFigure" : "") + " " + (props.pokemon ? "pokeBallFilledFigure  shadow align-bottom rounded-circle overflow-hidden" : "") + " mr-2"}>
       <img className={"" + (props.selectedBall == props.index ? "pokeballSelected" : "pokeball")} src={props.pokemon ? props.pokemon.image : props.image} />
+      <img className={"overlayCross " + (!props.pokemon?.isDead ? "d-none" : " ")} src="../res/X.png" />
     </figure>
   )
 }

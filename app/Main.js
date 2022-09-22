@@ -102,6 +102,16 @@ function Main() {
         draft.rivalTeamScore = sumRival
         //}
         return
+      case "pokemonDied":
+        console.log("pokemon died dispatch")
+        draft.chosenPokemon[action.value].isDead = true
+        return
+      case "reviveAllPokemon":
+        draft.chosenPokemon = draft.chosenPokemon.map(pk => {
+          pk.isDead = false
+          return pk
+        })
+        return
     }
   }
 
@@ -119,20 +129,20 @@ function Main() {
     }
   }, [state.chosenPokemon])
 
-// add prop used in battle
-function returnObjWithNewProp(obj) {
-  return {
+  // add prop used in battle
+  function returnObjWithNewProp(obj) {
+    return {
       ...obj,
       isDead: false
-    }  
-}
+    }
+  }
 
   return (
-      // <ExampleContext.Provider value={{ state, dispatch }}>  is not optimal for performance
-  // because anytime these objects change, the components will re-render to have the latest value of state and dispatch
-  // also, some components will only need access to dispatch and not state
-  // so the React team recommends to have 2 context providers.
-  // 1 for state and other for dispatch.
+    // <ExampleContext.Provider value={{ state, dispatch }}>  is not optimal for performance
+    // because anytime these objects change, the components will re-render to have the latest value of state and dispatch
+    // also, some components will only need access to dispatch and not state
+    // so the React team recommends to have 2 context providers.
+    // 1 for state and other for dispatch.
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <ApolloProvider client={client}>
