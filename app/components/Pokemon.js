@@ -54,7 +54,7 @@ function Pokemon(props) {
               </figure>
               <div className="pokemonCardFooter position-absolute">
                 <div className="w-50 float-left pl-2 rounded-left" style={{ backgroundColor: `${typeColor}` }}>
-                  <b>{props.types[0]}</b>
+                  <b>{props.types ? props.types[0] : "-"}</b>
                 </div>
                 <div className="w-50 float-left pl-2 rounded-right" style={{ backgroundColor: `${typeSecondaryColor}` }}>
                   <b>{props.types[1] ? props.types[1] : <span>&nbsp;</span>}</b>

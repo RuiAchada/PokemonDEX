@@ -70,7 +70,9 @@ function Main() {
         draft.isDetailOpen = false
         return
       case "choosePokemon":
-        draft.chosenPokemon[draft.selectedBall] = action.value[0]
+        console.log(action.value[0])
+        draft.chosenPokemon[draft.selectedBall] = returnObjWithNewProp(action.value[0])
+        console.log(returnObjWithNewProp(action.value[0]))
         //draft.pokeballsImg[draft.selectedBall] = action.value[0].image
         if (draft.selectedBall < maxChosenPokemon) draft.selectedBall++
         else draft.selectedBall = 0
@@ -117,13 +119,20 @@ function Main() {
     }
   }, [state.chosenPokemon])
 
-  // <ExampleContext.Provider value={{ state, dispatch }}>  is not optimal for performance
+// add prop used in battle
+function returnObjWithNewProp(obj) {
+  return {
+      ...obj,
+      isDead: false
+    }  
+}
+
+  return (
+      // <ExampleContext.Provider value={{ state, dispatch }}>  is not optimal for performance
   // because anytime these objects change, the components will re-render to have the latest value of state and dispatch
   // also, some components will only need access to dispatch and not state
   // so the React team recommends to have 2 context providers.
   // 1 for state and other for dispatch.
-
-  return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <ApolloProvider client={client}>
