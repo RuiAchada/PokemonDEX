@@ -356,7 +356,7 @@
 }
 
 /* MY POKEMON ATTACK ANIMATION ==================== */
-.animation {
+/*.animation {
   animation: sampleanimation 1s forwards;
 }
 
@@ -377,5 +377,62 @@
     left: 0px;
     top: 150px;
   }
+}*/
+
+.slide-left,
+.slide-back,
+.slide-right {
+    transition: transform .1s
+}
+
+.received-damage {
+  transition: transform .5s
+}
+
+/*.animation .this-should-from-left {
+    transform: translateX(100px);
+}*/
+
+.animation .slide-back {
+    transform: translateX(0);
+}
+
+.animation .slide-left {
+    transform: translateX(-100px);
+}
+
+.animation .slide-right {
+  transform: translateX(100px);
+}
+
+.animation .brightness {
+  -webkit-animation: brightness .3s infinite;
+}
+
+@-webkit-keyframes brightness {
+  0%, 100%  { -webkit-filter: brightness(none); }
+  50% { -webkit-filter: brightness(5); }
 }
 /* MY POKEMON ATTACK ANIMATION ==================== */
+
+/* STATUS (poison, freeze, paralyzed, burn, etc) ==================== */
+/* https://isotropic.co/tool/hex-color-to-css-filter/ */
+.poison {
+  -webkit-animation: poison .3s none;
+}
+
+@-webkit-keyframes poison {
+  0%, 100% { -webkit-filter: none; }
+  50% { -webkit-filter: grayscale(100%) brightness(70%) sepia(50%) hue-rotate(-100deg) saturate(500%) contrast(1); }
+}
+
+.frozen {
+  -webkit-animation: frozen .3s none;
+}
+
+@-webkit-keyframes frozen {
+  0%, 100% { -webkit-filter: none; }
+  50% { -webkit-filter: invert(48%) sepia(48%) saturate(5350%) hue-rotate(166deg) brightness(101%) contrast(101%); }
+}
+
+/* STATUS (poison, freeze, paralyzed, burn, etc) ==================== */

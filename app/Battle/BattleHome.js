@@ -18,12 +18,35 @@ import { useQuery, useLazyQuery, gql } from "@apollo/client"
 import { GET_POKEMON_DETAILS } from "../backend/queries"
 import Pokemon from "../components/Pokemon"
 
+export const overlayAttackImg = {
+  normal: "",
+  fighting: "",
+  flying: "",
+  poison: "",
+  ground: "",
+  rock: "",
+  bug: "",
+  ghost: "",
+  steel: "",
+  fire: "",
+  water: "",
+  grass: "",
+  electric: "",
+  psychic: "",
+  ice: "",
+  dragon: "",
+  dark: "",
+  fairy: ""
+}
+
 function BattleHome(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const numberOfPoke = 4
   const first = 151
-  const multiplier = 15
+  const multiplier = 12
+  const weakModifier = 3
+  const resistantModifier = 3
 
   const [state, setState] = useImmer({
     selectedRivalPokemon: { image: "../res/loadingPokemon.png" },
@@ -41,7 +64,11 @@ function BattleHome(props) {
     topMessage: "",
     bottomMessage: "",
     loadingAttack: false,
-    classNames: ""
+    classNames: "",
+    rivalAnimation: "",
+    myPokeAnimation: "",
+    rivalFigureClass: "",
+    myPokeFigureClass: ""
   })
 
   /*  const { loading, error, data } = useQuery(GET_POKEMONS, {
@@ -99,19 +126,33 @@ function BattleHome(props) {
   function deductDamage() {}
 
   function attacked({ name, type, damage }, attackedRival) {
-    let superEffective = false
-    let notVeryEffective = false
+    let rivalCssClass = ""
+    let myPokeCssClass = ""
+    let rivalFigureClass = state.rivalFigureClass
+    let myPokeFigureClass = state.myPokeFigureClass
+    let isWeak = false
+    let isRes = false
+    let mult = multiplier
+
+    console.log(name, type, damage)
 
     if (state.loadingAttack == true) return // if user tries to attack in the middle of an attack, return
     setState(draft => {
       draft.loadingAttack = true
     })
-    console.log(name)
+    isWeak =attackedRival ? isWeakness(state.selectedRivalPokemon, type) : isWeakness(state.selectedMyPokemon, type)
+    // dont need to check if is resistant if it's weak
+    if(!isWeak)
+    isRes =attackedRival ? isResistant(state.selectedRivalPokemon, type) : isResistant(state.selectedMyPokemon, type)
+
+    if(isWeak) mult+=weakModifier 
+    else if(isRes) mult-=resistantModifier
+
     const hpAffected = attackedRival ? state.rivalHP : state.myHP
     const maxHPAffected = attackedRival ? state.selectedRivalPokemon.maxHP : state.selectedMyPokemon.maxHP
 
     //console.log(name, type, damage)
-    const finalDamage = damage * multiplier
+    const finalDamage = damage * mult
     let hpLeft = hpAffected - finalDamage
     let finalPercentage
     if (hpLeft < 0) {
@@ -120,10 +161,29 @@ function BattleHome(props) {
     } else finalPercentage = parseInt((parseInt(hpLeft) / parseInt(maxHPAffected)) * 100) + "%"
 
     let additionalMessage = ""
-    if (superEffective) additionalMessage = " , it's super effective"
-    else if (notVeryEffective) additionalMessage = " , it's not very effective"
+    if (isWeak) additionalMessage = " , it's super effective"
+    else if (isRes) additionalMessage = " , it's not very effective"
+
+    if (attackedRival) {
+      if(type.toLowerCase() == "poison") rivalFigureClass = " poison "
+      else if(type.toLowerCase() == "ice") rivalFigureClass = " frozen "
+      else rivalCssClass += " brightness "
+      myPokeCssClass += " slide-left "
+      
+    } else {
+      if(type.toLowerCase() == "poison") myPokeFigureClass = " poison "
+      else if(type.toLowerCase() == "ice") myPokeFigureClass = " frozen "
+      else myPokeCssClass += " brightness "
+      
+      rivalCssClass += " slide-right "
+    }
 
     setState(draft => {
+      draft.myPokeAnimation = myPokeCssClass
+      draft.rivalAnimation = rivalCssClass
+      draft.rivalFigureClass = rivalFigureClass
+      draft.myPokeFigureClass = myPokeFigureClass
+
       if (attackedRival) {
         draft.rivalHP = hpLeft
         draft.rivalHpPercent = finalPercentage
@@ -135,6 +195,8 @@ function BattleHome(props) {
       }
     })
 
+    attackResetAnimation(attackedRival)
+
     const delay = setTimeout(() => {
       if (hpLeft == 0) pokeDeath(attackedRival)
       if (attackedRival && hpLeft > 0) rivalAttackBack()
@@ -142,6 +204,48 @@ function BattleHome(props) {
         draft.loadingAttack = false
       })
     }, 1000)
+  }
+
+  function isWeakness(pokemon, type) {
+const iswk = pokemon.weaknesses?.some(typeP => {
+  return typeP.toLowerCase() == type.toLowerCase()
+})
+return iswk
+  }
+
+  function isResistant(pokemon, type) {
+    const isRes = pokemon.resistant?.some(typeP => {
+      return typeP.toLowerCase() == type.toLowerCase()
+    })
+    return isRes
+  }
+
+  function attackResetAnimation(isPlayerAttacking) {
+    const animation = setTimeout(() => {
+      setState(draft => {
+        if(isPlayerAttacking) {
+          draft.myPokeAnimation = "slide-back"
+        } else {
+          draft.rivalAnimation = "slide-back"
+        }        
+      })
+    }, 100)
+    // reset for brightness is longer
+    const animationBrightness = setTimeout(() => {
+      setState(draft => {
+        if(isPlayerAttacking) {
+          draft.rivalAnimation = ""
+        } else {
+          draft.myPokeAnimation = ""
+        }        
+      })
+    }, 300)
+    const resetCssEffects = setTimeout(() => {
+      setState(draft => {
+        draft.myPokeFigureClass = ""
+        draft.rivalFigureClass = ""
+      })
+    }, 300)
   }
 
   // CPU attacks the player
@@ -258,7 +362,7 @@ function BattleHome(props) {
             {Boolean(state.selectedRivalPokemon) && (
               <div>
                 <div className="d-flex flex-row">
-                  <Pokemon key={state.selectedRivalPokemon.id} id={state.selectedRivalPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedRivalPokemon.name} image={state.selectedRivalPokemon.image} types={state.selectedRivalPokemon.types} />
+                  <Pokemon animationClass={state.rivalAnimation} figureClass={state.rivalFigureClass} key={state.selectedRivalPokemon.id} id={state.selectedRivalPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedRivalPokemon.name} image={state.selectedRivalPokemon.image} types={state.selectedRivalPokemon.types} />
                   <HealthBar hpPercentage={state.rivalHpPercent} hp={state.rivalHP} maxHP={state.selectedRivalPokemon.maxHP} />
                 </div>
               </div>
@@ -274,7 +378,7 @@ function BattleHome(props) {
             {Boolean(state.selectedMyPokemon) && (
               <div>
                 <div className="d-flex flex-row-reverse">
-                  <Pokemon key={state.selectedMyPokemon.id} id={state.selectedMyPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedMyPokemon.name} image={state.selectedMyPokemon.image} types={state.selectedMyPokemon.types} />
+                  <Pokemon animationClass={state.myPokeAnimation} figureClass={state.myPokeFigureClass} key={state.selectedMyPokemon.id} id={state.selectedMyPokemon.id} isLoading={state.isLoading} number={""} name={state.selectedMyPokemon.name} image={state.selectedMyPokemon.image} types={state.selectedMyPokemon.types} />
                   <HealthBar hpPercentage={state.myHpPercent} hp={state.myHP} maxHP={state.selectedMyPokemon.maxHP} />
                   <div className="d-flex flex-column-reverse">
                     <p>{state.bottomMessage}</p>
