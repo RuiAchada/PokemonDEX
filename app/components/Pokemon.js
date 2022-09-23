@@ -44,27 +44,24 @@ function Pokemon(props) {
       <div className="p-4">
         {Boolean(props.isLoading) && <Skeleton duration={0.5} height={205} width={205} />}
         {Boolean(!props.isLoading) && (
-          <Link className="animation" style={{ textDecoration: "none", color: "#212529" }} onClick={() => appDispatch({ type: "openDetails" })} key={props.id} to={`/Details/${props.name}`}>  
-            <div className={"pokemonCard " + (
-              props.animationClass ? props.animationClass : ""
-            )} data-name={props.name}>
-              <div className={" " + (
-              props.figureClass ? props.figureClass : ""
-            )}>
-              <div className="text-center m-0 p-1 rounded-top bg-light text-dark">
-                <b>{props.name + (props.number ? " #" + props.number : "")}</b>
-              </div>
-              <figure className="align-bottom shadow">
-                {<img className="" src={`${props.image}`} /> }
-              </figure>
-              <div className="pokemonCardFooter position-absolute">
-                <div className="w-50 float-left pl-2 rounded-left" style={{ backgroundColor: `${typeColor}` }}>
-                  <b>{props.types ? props.types[0] : "-"}</b>
+          <Link className="animation" style={{ textDecoration: "none", color: "#212529" }} onClick={() => appDispatch({ type: "openDetails" })} key={props.id} to={`/Details/${props.name}`}>
+            <div className={"pokemonCard " + (props.animationClass ? props.animationClass : "")} data-name={props.name}>
+              <div className={" " + (props.figureClass ? props.figureClass : "")}>
+                <div className="text-center m-0 p-1 rounded-top bg-light text-dark">
+                  <b>{props.name + (props.number ? " #" + props.number : "")}</b>
                 </div>
-                <div className="w-50 float-left pl-2 rounded-right" style={{ backgroundColor: `${typeSecondaryColor}` }}>
-                  <b>{props.types[1] ? props.types[1] : <span>&nbsp;</span>}</b>
+                <figure className="align-bottom shadow">
+                  <img src={`${props.image}`} />
+                  {Boolean(props.effectImg) && <img className={"overlayEffect " + (props.effectCss ? props.effectCss : "")} src={props.effectImg} />}
+                </figure>
+                <div className="pokemonCardFooter position-absolute">
+                  <div className="w-50 float-left pl-2 rounded-left" style={{ backgroundColor: `${typeColor}` }}>
+                    <b>{props.types ? props.types[0] : "-"}</b>
+                  </div>
+                  <div className="w-50 float-left pl-2 rounded-right" style={{ backgroundColor: `${typeSecondaryColor}` }}>
+                    <b>{props.types[1] ? props.types[1] : <span>&nbsp;</span>}</b>
+                  </div>
                 </div>
-              </div>
               </div>
             </div>
           </Link>

@@ -304,7 +304,7 @@
 .healthBar {
   height: 20px;
   width: 100%;
-  transition: width 1s;
+  transition: width 1.2s;
 }
 
 .gameOver {
@@ -382,11 +382,11 @@
 .slide-left,
 .slide-back,
 .slide-right {
-    transition: transform .1s
+  transition: transform 0.3s;
 }
 
 .received-damage {
-  transition: transform .5s
+  transition: transform 0.5s;
 }
 
 /*.animation .this-should-from-left {
@@ -394,11 +394,11 @@
 }*/
 
 .animation .slide-back {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .animation .slide-left {
-    transform: translateX(-100px);
+  transform: translateX(-100px);
 }
 
 .animation .slide-right {
@@ -406,33 +406,74 @@
 }
 
 .animation .brightness {
-  -webkit-animation: brightness .3s infinite;
+  -webkit-animation: brightness 0.5s infinite;
 }
 
 @-webkit-keyframes brightness {
-  0%, 100%  { -webkit-filter: brightness(none); }
-  50% { -webkit-filter: brightness(5); }
+  0%,
+  100% {
+    -webkit-filter: brightness(none);
+  }
+  50% {
+    -webkit-filter: brightness(5);
+  }
 }
 /* MY POKEMON ATTACK ANIMATION ==================== */
 
 /* STATUS (poison, freeze, paralyzed, burn, etc) ==================== */
 /* https://isotropic.co/tool/hex-color-to-css-filter/ */
 .poison {
-  -webkit-animation: poison .3s none;
+  -webkit-animation: poison 0.8s none;
 }
 
 @-webkit-keyframes poison {
-  0%, 100% { -webkit-filter: none; }
-  50% { -webkit-filter: grayscale(100%) brightness(70%) sepia(50%) hue-rotate(-100deg) saturate(500%) contrast(1); }
+  0%,
+  100% {
+    -webkit-filter: none;
+  }
+  50% {
+    -webkit-filter: grayscale(100%) brightness(70%) sepia(50%) hue-rotate(-100deg) saturate(500%) contrast(1);
+  }
 }
 
 .frozen {
-  -webkit-animation: frozen .3s none;
+  -webkit-animation: frozen 0.8s none;
 }
 
 @-webkit-keyframes frozen {
-  0%, 100% { -webkit-filter: none; }
-  50% { -webkit-filter: invert(48%) sepia(48%) saturate(5350%) hue-rotate(166deg) brightness(101%) contrast(101%); }
+  0%,
+  100% {
+    -webkit-filter: none;
+  }
+  50% {
+    -webkit-filter: grayscale(100%) brightness(70%) sepia(50%) hue-rotate(130deg) saturate(500%) contrast(1);
+  }
+}
+
+.burnt {
+  -webkit-animation: burnt 0.8s none;
+}
+
+@-webkit-keyframes burnt {
+  0%,
+  100% {
+    -webkit-filter: none;
+  }
+  50% {
+    -webkit-filter: grayscale(100%) brightness(70%) sepia(50%) hue-rotate(357deg) saturate(500%) contrast(1);
+  }
+}
+
+/*change thunder gif to yellow color*/
+.filter-yellow {
+  filter: grayscale(100%) brightness(130%) sepia(50%) hue-rotate(355deg) saturate(500%) contrast(1);
+  transform: rotate(-10deg);
+}
+
+.overlayEffect {
+  position: absolute;
+  max-width: 205px !important;
+  min-height: 205px !important;
 }
 
 /* STATUS (poison, freeze, paralyzed, burn, etc) ==================== */
